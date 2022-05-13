@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       repository-projects: write
+      contents: write
+      issues: write
+      pull-requests: write
     steps:
       - uses: alex-page/github-project-automation-plus@v0.8.1
         with:
