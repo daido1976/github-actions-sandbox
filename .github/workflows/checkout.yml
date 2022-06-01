@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  checkout:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
       - name: Run a one-line script
         run: echo "recently commit -> $(git rev-parse --short HEAD)"
