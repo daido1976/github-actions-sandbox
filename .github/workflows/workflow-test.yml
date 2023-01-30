@@ -1,0 +1,12 @@
+name: dispatch test
+on:
+  workflow_dispatch:
+
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: |
+          echo ${{ github.ref }}
+          echo ${{ github.sha }}
