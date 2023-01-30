@@ -10,5 +10,6 @@ jobs:
       - name: echo
         run: |
           echo ${{ github.ref }}
+          # main という tag を使うと main ブランチを偽装できる
           echo ${{ github.ref_name }}
           echo ${{ github.sha }}
