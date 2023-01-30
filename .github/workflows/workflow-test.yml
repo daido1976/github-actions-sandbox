@@ -4,10 +4,19 @@ on:
 
 jobs:
   dispatch:
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
+      - name: Verify branch
+        run: |
+          if [ ${{ github.ref }} != 'refs/heads/main' ]; then
+            echo "develop ブランチ以外ではこのジョブは実行できません"
+            exit 1
+          fi
       - name: echo
         run: |
+          echo "ここまできた"
           echo ${{ github.ref }}
+          # # main という tag を使うと main ブランチを偽装できる
+          echo ${{ github.ref_name }}
           echo ${{ github.sha }}
