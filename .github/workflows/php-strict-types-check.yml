@@ -1,0 +1,17 @@
+name: Strict Types Declaration Check
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  check-strict-types:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run strict types checker
+        env:
+          BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+        run: bash scripts/php-check-strict-types.sh
