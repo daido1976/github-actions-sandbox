@@ -1,11 +1,14 @@
 #!/bin/bash
 
-# ベースブランチと現在の HEAD 間で新規作成されたファイルのみを取得
-new_files=$(git diff --name-status origin/"$BASE_BRANCH"..HEAD | awk '$1 == "A" { print $2 }')
+# Get the current branch name
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
-# 新規作成されたPHPファイルがdeclare(strict_types=1);を含んでいるか確認
+# Get the list of new files created between BASE_BRANCH and the current branch
+new_files=$(git diff --name-only --diff-filter=A origin/"$BASE_BRANCH" "$CURRENT_BRANCH")
+
+# Check if each new PHP file starts with 'declare(strict_types=1);'
 for file in $new_files; do
-    # テストファイルはチェックをスキップ
+    # Skip test files
     if [[ $file == *Test.php ]]; then
         continue
     fi
