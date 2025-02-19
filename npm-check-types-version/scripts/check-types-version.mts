@@ -1,48 +1,64 @@
-import { readFileSync } from "node:fs";
+import { readFile } from "fs/promises";
 import semver from "semver";
+
+type PackageJson = {
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
+};
 
 async function checkTypesVersions(): Promise<void> {
   const packageJsonPath = "./package.json";
 
   try {
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+    const fileContent = await readFile(packageJsonPath, "utf-8");
+    const packageJson: PackageJson = JSON.parse(fileContent);
+
     const dependencies = packageJson.dependencies || {};
     const devDependencies = packageJson.devDependencies || {};
-    const allDeps = { ...dependencies, ...devDependencies };
+    const allDeps = {
+      ...dependencies,
+      ...devDependencies,
+    };
 
-    for (const [pkg, version] of Object.entries(allDeps)) {
-      if (pkg.startsWith("@types/")) {
+    const typePackages = Object.entries(allDeps)
+      .filter(([pkg]) => pkg.startsWith("@types/"))
+      .map(([pkg, version]) => {
         const basePackage = pkg.replace("@types/", "");
-        const baseVersion = allDeps[basePackage];
+        return {
+          pkg,
+          version,
+          basePackage,
+          baseVersion: allDeps[basePackage],
+        };
+      });
 
-        if (!baseVersion) {
-          console.warn(
-            `⚠️ Warning: ${pkg} (${version}) の本体パッケージ ${basePackage} が見つかりません。スキップします。`
-          );
-          continue;
-        }
-
-        console.log(
-          `🔍 Checking ${pkg} (${version}) against ${basePackage} (${baseVersion})`
+    for (const { pkg, version, basePackage, baseVersion } of typePackages) {
+      if (!baseVersion) {
+        console.warn(
+          `⚠️ Warning: ${pkg} (${version}) の本体パッケージ ${basePackage} が見つかりません。スキップします。`
         );
+        continue;
+      }
 
-        // `semver.coerce` を使ってバージョン比較
-        const coercedVersion = semver.coerce(version as string);
-        const coercedBaseVersion = semver.coerce(baseVersion as string);
+      console.log(
+        `🔍 Checking ${pkg} (${version}) against ${basePackage} (${baseVersion})`
+      );
 
-        if (!coercedVersion || !coercedBaseVersion) {
-          console.warn(
-            `⚠️ Warning: ${pkg} (${version}) または ${basePackage} (${baseVersion}) のバージョンが解析できません。スキップします。`
-          );
-          continue;
-        }
+      const coercedVersion = semver.coerce(version);
+      const coercedBaseVersion = semver.coerce(baseVersion);
 
-        if (semver.gt(coercedVersion, coercedBaseVersion)) {
-          console.error(
-            `❌ @types パッケージ (${pkg}: ${version}) が本体 (${basePackage}: ${baseVersion}) より新しいためエラー`
-          );
-          process.exit(1);
-        }
+      if (!coercedVersion || !coercedBaseVersion) {
+        console.warn(
+          `⚠️ Warning: ${pkg} (${version}) または ${basePackage} (${baseVersion}) のバージョンが解析できません。スキップします。`
+        );
+        continue;
+      }
+
+      if (semver.gt(coercedVersion, coercedBaseVersion)) {
+        console.error(
+          `❌ @types パッケージ (${pkg}: ${version}) が本体 (${basePackage}: ${baseVersion}) より新しいためエラー`
+        );
+        process.exit(1);
       }
     }
 
