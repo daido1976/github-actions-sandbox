@@ -24,8 +24,5 @@ jobs:
           cd npm-check-types-version
           npm ci
 
-      - name: Install tsx
-        run: npm install --global tsx
-
       - name: Run @types version check
-        run: tsx npm-check-types-version/scripts/check-types-version.mts
+        run: npx tsx npm-check-types-version/scripts/check-types-version.mts
