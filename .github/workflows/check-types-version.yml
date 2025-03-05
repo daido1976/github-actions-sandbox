@@ -1,0 +1,28 @@
+name: Check @types Versions
+
+on:
+  pull_request:
+    paths:
+      - "npm-check-types-version/package.json"
+      - "npm-check-types-version/package-lock.json"
+  workflow_dispatch:
+
+jobs:
+  check-types-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          cd npm-check-types-version
+          npm ci
+
+      - name: Run @types version check
+        run: npx tsx npm-check-types-version/scripts/check-types-version.mts

@@ -5,7 +5,10 @@
   "scripts": {
     "check": "tsx scripts/check-types-version.mts"
   },
-  "keywords": [],
+  "keywords": [
+    "foo",
+    "bar"
+  ],
   "author": "",
   "license": "ISC",
   "description": "",
