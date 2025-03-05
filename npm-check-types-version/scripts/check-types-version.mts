@@ -1,4 +1,5 @@
-import { readFile } from "fs/promises";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import semver from "semver";
 
 type PackageJson = {
@@ -7,7 +8,7 @@ type PackageJson = {
 };
 
 async function checkTypesVersions(): Promise<void> {
-  const packageJsonPath = "./package.json";
+  const packageJsonPath = path.resolve(import.meta.dirname, "../package.json");
 
   try {
     const fileContent = await readFile(packageJsonPath, "utf-8");
