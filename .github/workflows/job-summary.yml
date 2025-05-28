@@ -61,7 +61,18 @@ on:
           - gamma
 
 jobs:
-  test-inputs:
+  dynamic-inputs-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display dynamic summary from inputs
+        run: |
+          echo "## 📝 実行パラメータ" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| パラメータ名 | 値 |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo '${{ toJson(github.event.inputs) }}' | jq -r 'to_entries[] | "| \(.key) | **\(.value)** |"' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+  full-inputs-test:
     runs-on: ubuntu-latest
     steps:
       - name: Display all inputs
