@@ -1,0 +1,158 @@
+name: Job Summary
+
+on:
+  workflow_dispatch:
+    inputs:
+      text_input:
+        description: "テキスト入力 (string型)"
+        required: true
+        default: "デフォルト値"
+        type: string
+
+      number_input:
+        description: "数値入力 (number型)"
+        required: true
+        default: "42"
+        type: number
+
+      boolean_input:
+        description: "真偽値入力 (boolean型)"
+        required: true
+        default: true
+        type: boolean
+
+      choice_input:
+        description: "選択肢入力 (choice型)"
+        required: true
+        default: "option2"
+        type: choice
+        options:
+          - option1
+          - option2
+          - option3
+
+      environment_input:
+        description: "環境選択 (environment型)"
+        required: true
+        type: environment
+
+      optional_text:
+        description: "オプションテキスト (required: false)"
+        required: false
+        type: string
+
+      optional_number:
+        description: "オプション数値 (required: false)"
+        required: false
+        type: number
+
+      optional_boolean:
+        description: "オプション真偽値 (required: false)"
+        required: false
+        type: boolean
+
+      optional_choice:
+        description: "オプション選択肢 (required: false)"
+        required: false
+        type: choice
+        options:
+          - alpha
+          - beta
+          - gamma
+
+jobs:
+  test-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display all inputs
+        run: |
+          echo "## 🎯 Workflow Dispatch Inputs Test" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Input Type | Input Name | Value | Type Check |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------|------------|-------|------------|" >> $GITHUB_STEP_SUMMARY
+          echo "| string | text_input | \`${{ github.event.inputs.text_input }}\` | $(echo '${{ github.event.inputs.text_input }}' | wc -c) chars |" >> $GITHUB_STEP_SUMMARY
+          echo "| number | number_input | \`${{ github.event.inputs.number_input }}\` | $(if [[ '${{ github.event.inputs.number_input }}' =~ ^[0-9]+$ ]]; then echo '✅ Valid number'; else echo '❌ Invalid number'; fi) |" >> $GITHUB_STEP_SUMMARY
+          echo "| boolean | boolean_input | \`${{ github.event.inputs.boolean_input }}\` | $(if [[ '${{ github.event.inputs.boolean_input }}' == 'true' || '${{ github.event.inputs.boolean_input }}' == 'false' ]]; then echo '✅ Valid boolean'; else echo '❌ Invalid boolean'; fi) |" >> $GITHUB_STEP_SUMMARY
+          echo "| choice | choice_input | \`${{ github.event.inputs.choice_input }}\` | $(case '${{ github.event.inputs.choice_input }}' in option1|option2|option3) echo '✅ Valid choice';; *) echo '❌ Invalid choice';; esac) |" >> $GITHUB_STEP_SUMMARY
+          echo "| environment | environment_input | \`${{ github.event.inputs.environment_input }}\` | $(echo '${{ github.event.inputs.environment_input }}' | wc -c) chars |" >> $GITHUB_STEP_SUMMARY
+          echo "| optional string | optional_text | \`${{ github.event.inputs.optional_text }}\` | $(if [[ -z '${{ github.event.inputs.optional_text }}' ]]; then echo '📝 Empty'; else echo "$(echo '${{ github.event.inputs.optional_text }}' | wc -c) chars"; fi) |" >> $GITHUB_STEP_SUMMARY
+          echo "| optional number | optional_number | \`${{ github.event.inputs.optional_number }}\` | $(if [[ -z '${{ github.event.inputs.optional_number }}' ]]; then echo '📝 Empty'; elif [[ '${{ github.event.inputs.optional_number }}' =~ ^[0-9]+$ ]]; then echo '✅ Valid number'; else echo '❌ Invalid number'; fi) |" >> $GITHUB_STEP_SUMMARY
+          echo "| optional boolean | optional_boolean | \`${{ github.event.inputs.optional_boolean }}\` | $(if [[ -z '${{ github.event.inputs.optional_boolean }}' ]]; then echo '📝 Empty'; elif [[ '${{ github.event.inputs.optional_boolean }}' == 'true' || '${{ github.event.inputs.optional_boolean }}' == 'false' ]]; then echo '✅ Valid boolean'; else echo '❌ Invalid boolean'; fi) |" >> $GITHUB_STEP_SUMMARY
+          echo "| optional choice | optional_choice | \`${{ github.event.inputs.optional_choice }}\` | $(if [[ -z '${{ github.event.inputs.optional_choice }}' ]]; then echo '📝 Empty'; else case '${{ github.event.inputs.optional_choice }}' in alpha|beta|gamma) echo '✅ Valid choice';; *) echo '❌ Invalid choice';; esac; fi) |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Test conditional logic with boolean
+        if: ${{ github.event.inputs.boolean_input == 'true' }}
+        run: |
+          echo "## ✅ Boolean Conditional Test" >> $GITHUB_STEP_SUMMARY
+          echo "Boolean input was true, so this step executed!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Test conditional logic with choice
+        run: |
+          echo "## 🔀 Choice Conditional Test" >> $GITHUB_STEP_SUMMARY
+          case "${{ github.event.inputs.choice_input }}" in
+            "option1")
+              echo "You selected Option 1! 🥇" >> $GITHUB_STEP_SUMMARY
+              ;;
+            "option2")
+              echo "You selected Option 2! 🥈" >> $GITHUB_STEP_SUMMARY
+              ;;
+            "option3")
+              echo "You selected Option 3! 🥉" >> $GITHUB_STEP_SUMMARY
+              ;;
+            *)
+              echo "Unknown option selected" >> $GITHUB_STEP_SUMMARY
+              ;;
+          esac
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Test number operations
+        run: |
+          echo "## 🔢 Number Operations Test" >> $GITHUB_STEP_SUMMARY
+          NUMBER=${{ github.event.inputs.number_input }}
+          DOUBLED=$((NUMBER * 2))
+          echo "Original number: $NUMBER" >> $GITHUB_STEP_SUMMARY
+          echo "Doubled: $DOUBLED" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Environment context
+        run: |
+          echo "## 🌍 Environment Context" >> $GITHUB_STEP_SUMMARY
+          echo "Selected environment: \`${{ github.event.inputs.environment_input }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Raw JSON output
+        run: |
+          echo "## 📋 Raw GitHub Context" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
+          echo '${{ toJson(github.event.inputs) }}' >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+      - name: Test optional inputs
+        run: |
+          echo "## 🔍 Optional Inputs Test" >> $GITHUB_STEP_SUMMARY
+          if [[ -n "${{ github.event.inputs.optional_text }}" ]]; then
+            echo "Optional text provided: \`${{ github.event.inputs.optional_text }}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Optional text was not provided" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [[ -n "${{ github.event.inputs.optional_number }}" ]]; then
+            echo "Optional number provided: \`${{ github.event.inputs.optional_number }}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Optional number was not provided" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [[ -n "${{ github.event.inputs.optional_boolean }}" ]]; then
+            echo "Optional boolean provided: \`${{ github.event.inputs.optional_boolean }}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Optional boolean was not provided" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [[ -n "${{ github.event.inputs.optional_choice }}" ]]; then
+            echo "Optional choice provided: \`${{ github.event.inputs.optional_choice }}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Optional choice was not provided" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
