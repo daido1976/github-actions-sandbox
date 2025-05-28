@@ -66,10 +66,7 @@ jobs:
     steps:
       - name: Display dynamic summary from inputs
         run: |
-          echo "## 🧐 実行パラメータの確認" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "以下のパラメータはこの workflow を実行する際に入力された値です。" >> $GITHUB_STEP_SUMMARY
-          echo "レビュー時に、入力内容をダブルチェックする目的で表示しています。" >> $GITHUB_STEP_SUMMARY
+          echo "## 📋 実行パラメータの確認" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| パラメータ名 | 値 |" >> $GITHUB_STEP_SUMMARY
           echo "|--------------|-----|" >> $GITHUB_STEP_SUMMARY
