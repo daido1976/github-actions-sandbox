@@ -70,6 +70,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| パラメータ名 | 値 |" >> $GITHUB_STEP_SUMMARY
           echo "|--------------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| **branch**   | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
           echo '${{ toJson(github.event.inputs) }}' | jq -r 'to_entries[] | "| **\(.key)** | `\(.value)` |"' >> $GITHUB_STEP_SUMMARY
   full-inputs-test:
     runs-on: ubuntu-latest
