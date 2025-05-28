@@ -1,0 +1,44 @@
+name: protection-rule-test
+run-name: Protection Rule Test(${{ github.event.inputs.targetId }}) - ${{ github.event.inputs.environment }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      targetId:
+        description: "target id"
+        required: true
+      environment:
+        description: "env"
+        required: true
+        type: environment
+
+jobs:
+  pre-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pre-environment check and summary
+        run: |
+          echo "Starting workflow for target: ${{ github.event.inputs.targetId }}"
+          echo "Target environment: ${{ github.event.inputs.environment }}"
+          echo "Current time: $(date)"
+
+          # Job Summary作成
+          echo "## 🚀 Workflow Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Target ID | \`${{ github.event.inputs.targetId }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | \`${{ github.event.inputs.environment }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Triggered by | @${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Started at | $(date) |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⏳ Waiting for environment approval..." >> $GITHUB_STEP_SUMMARY
+
+  run:
+    needs: pre-check
+    environment: ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: |
+          echo "Hello world"
