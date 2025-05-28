@@ -66,7 +66,7 @@ jobs:
     steps:
       - name: Display dynamic summary from inputs
         run: |
-          echo "## 🧐 実行パラメータの確認" >> $GITHUB_STEP_SUMMARY
+          echo "## 📋 実行パラメータの確認" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| パラメータ名 | 値 |" >> $GITHUB_STEP_SUMMARY
           echo "|--------------|-----|" >> $GITHUB_STEP_SUMMARY
