@@ -63,6 +63,7 @@ on:
 jobs:
   dynamic-inputs-test:
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Display dynamic summary from inputs
         run: |
@@ -74,6 +75,7 @@ jobs:
           echo '${{ toJson(github.event.inputs) }}' | jq -r 'to_entries[] | "| **\(.key)** | `\(.value)` |"' >> $GITHUB_STEP_SUMMARY
   full-inputs-test:
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Display all inputs
         run: |
