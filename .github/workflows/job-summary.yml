@@ -167,3 +167,16 @@ jobs:
             echo "Optional choice was not provided" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
+      - name: Dump inputs (raw and toJson)
+        run: |
+          echo "## 🔍 Debug Inputs" >> $GITHUB_STEP_SUMMARY
+
+          echo "### 🟦 Raw inputs" >> $GITHUB_STEP_SUMMARY
+          echo '\`\`\`' >> $GITHUB_STEP_SUMMARY
+          echo "${{ github.event.inputs }}" >> $GITHUB_STEP_SUMMARY
+          echo '\`\`\`' >> $GITHUB_STEP_SUMMARY
+
+          echo "### 🟨 toJson(github.event.inputs)" >> $GITHUB_STEP_SUMMARY
+          echo '\`\`\`json' >> $GITHUB_STEP_SUMMARY
+          echo '${{ toJson(github.event.inputs) }}' >> $GITHUB_STEP_SUMMARY
+          echo '\`\`\`' >> $GITHUB_STEP_SUMMARY
