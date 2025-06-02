@@ -61,6 +61,10 @@ on:
           - gamma
 
 jobs:
+  display_input_parameters_from_reusable_workflow:
+    uses: ./.github/workflows/display-input-parameters.yml
+    with:
+      include_keys: '["text_input","environment_input","optional_choice","number_input"]'
   dynamic-inputs-test:
     runs-on: ubuntu-latest
     permissions: {}
