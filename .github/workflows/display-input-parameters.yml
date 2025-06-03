@@ -1,25 +1,17 @@
 name: Display input parameters
 on:
   workflow_call:
-    inputs:
-      include_keys:
-        description: 'JSON array of input keys to show, e.g. ["teamId","environment"]'
-        required: true
-        type: string
 
 jobs:
   display_input_parameters:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
-      - name: Add summary
-        env:
-          KEYS_JSON: ${{ inputs.include_keys }}
+      - name: Display input parameters from workflow_dispatch
         run: |
-          echo '## 📋 実行パラメータの確認' >> "$GITHUB_STEP_SUMMARY"
-          echo                             >> "$GITHUB_STEP_SUMMARY"
-          echo '| パラメータ名 | 値 |'      >> "$GITHUB_STEP_SUMMARY"
-          echo '|--------------|-----|'     >> "$GITHUB_STEP_SUMMARY"
-          echo "| **branch** | \`${{ github.ref_name }}\` |" >> "$GITHUB_STEP_SUMMARY"
-          echo '${{ toJson(github.event.inputs) }}' \
-            | jq -r --argjson keys "$KEYS_JSON" 'to_entries[] | select(.key | IN($keys[])) | "| **\(.key)** | `\(.value)` |" ' >> "$GITHUB_STEP_SUMMARY"
+          echo '## 📋 実行パラメータの確認' >> $GITHUB_STEP_SUMMARY
+          echo                             >> $GITHUB_STEP_SUMMARY
+          echo '| パラメータ名 | 値 |'      >> $GITHUB_STEP_SUMMARY
+          echo '|--------------|-----|'     >> $GITHUB_STEP_SUMMARY
+          echo "| **branch** | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo '${{ toJson(github.event.inputs) }}' | jq -r 'to_entries[] | "| **\(.key)** | `\(.value)` |"' >> $GITHUB_STEP_SUMMARY
