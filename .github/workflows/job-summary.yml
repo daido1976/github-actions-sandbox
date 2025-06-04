@@ -63,6 +63,7 @@ on:
 jobs:
   display_input_parameters_from_reusable_workflow:
     uses: ./.github/workflows/display-input-parameters.yml
+    permissions: {}
   dynamic-inputs-test:
     runs-on: ubuntu-latest
     permissions: {}
