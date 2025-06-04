@@ -3,7 +3,7 @@ on:
   workflow_call:
 
 jobs:
-  display_input_parameters:
+  run:
     runs-on: ubuntu-latest
     permissions: {}
     steps:
